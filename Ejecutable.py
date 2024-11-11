@@ -18,6 +18,7 @@ print("Si coloca mal alguna secuencia de bases, se le pedira que la ingrese devu
 for i in range(TAM_SECUENCIA):
     while True:
         secuencia = input(f"Ingrese la {i+1}º secuencia de 6 bases nitrogenadas: ").upper()
+
         if len(secuencia) == TAM_SECUENCIA and all(base in BASES_NITROGENADAS for base in secuencia):
             adn.append(list(secuencia))
             break
@@ -25,11 +26,11 @@ for i in range(TAM_SECUENCIA):
             print("Intentelo nuevamente. Secuencia Invalida")
 print("")
 
-print("Que es lo que desea hacer?")
+"""print("Que es lo que desea hacer?")
 print("Detectar mutantes: D | Mutar ADN: M | Sanar ADN: S")
-option = input("Ingrese D, M o S segun lo que quiera realizar: ").upper()
+option = input("Ingrese D, M o S segun lo que quiera realizar: ").upper()"""
 
-if option in ["D", "M", "S"]:
+"""if option in ["D", "M", "S"]:
     if option == "D":
         adn1 = Clases.Detector(adn)
         adn1.detectar_mutantes()
@@ -38,17 +39,17 @@ if option in ["D", "M", "S"]:
         pass
     else:
         pass
+"""
 
 
-
-"""print("Esta es la secuecia de ADN que usted ingreso")
+print("Esta es la secuecia de ADN que usted ingreso")
 for i in range (6):
     for j in range (6):
         print(f"{adn[i][j]}", end=" ")
     print("")
 
-adn1= Clases.Detector(adn)"""
-
+adn1= Clases.Detector(adn)
+adn1.detectar_mutantes()
 input()
 """
 ACGTAC
@@ -57,4 +58,12 @@ GATCGA
 ATGCAT
 CGATCG
 TAGCTA
+"""
+"""
+TGATCA
+GTTTCA
+CATCAT
+GAGTTA
+ATTGCG
+CTGTTC
 """
