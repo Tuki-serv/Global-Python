@@ -25,36 +25,40 @@ class Detector:
         else:
             print("Chau")
             return False
+    def verficacion(self, lista,rango):
+        self.identidad = lista
+        self.rango = rango
+        for j in range(1, self.rango):
+            if self.identidad[j] == self.identidad[j-1]:
+                self.contador += 1
+            else:
+                self.contador = 1
+            if self.contador > self.CANTIDAD_MAXIMA:
+                print(self.identidad)
+                return True
+        return False
 
     def horizontal(self):
         for i in range(self.rango_secuencia):
             self.contador = 1
             self.fila = self.adn[i]
-            for j in range(1, self.rango_secuencia):
-                if self.fila[j] == self.fila[j-1]:
-                    self.contador += 1
-                else:
-                    self.contador = 1
-                if self.contador > self.CANTIDAD_MAXIMA:
-                    print("Horizontal detectada")
-                    print(self.fila)
-                    return True
-            return False
+            fila = self.fila
+            rango = self.rango_secuencia
+            if  self.verficacion(fila,rango) == True:
+                print("Horizontal detectada")
+                return True
+        return False
 
     def vertical(self):
         for i in range(self.rango_secuencia):
             self.contador = 1
             self.columna = [self.adn[j][i] for j in range(self.rango_secuencia)]
-            for v in range(1, self.rango_secuencia):
-                if self.columna[v] == self.columna[v-1]:
-                    self.contador += 1
-                else:
-                    self.contador = 1
-                if self.contador > self.CANTIDAD_MAXIMA:
-                    print("Vertical detectada")
-                    print(self.columna)
-                    return True
-            return False
+            fila = self.columna
+            rango = (self.rango_secuencia)
+            if self.verficacion(fila,rango):
+                print("Vertical detectada")
+                return True
+        return False
 
     def diagonal(self):
         self.orden = 2
@@ -66,15 +70,11 @@ class Detector:
                 self.matriz = self.adn
             for d in self.coordenadas.values():
                 self.elementos = [self.matriz[j[0]][j[1]] for j in d]
-                for v in range(1, len(self.elementos)):
-                    if self.elementos[v] == self.elementos[v-1]:
-                        self.contador += 1
-                    else:
-                        self.contador = 1
-                    if self.contador > self.CANTIDAD_MAXIMA:
-                        print("Diagonal detectada")
-                        print(self.elementos)
-                        return True
+                fila = self.elementos
+                rango = len(self.elementos)
+                if self.verficacion(fila,rango) == True:
+                    print("Diagonal detectada")
+                    return True
         return False
 
 class Mutador():
