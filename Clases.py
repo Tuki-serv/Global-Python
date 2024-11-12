@@ -82,6 +82,17 @@ class Detector:
                     return True
         return False
 
-class Mutador():
+class Mutador():# Superclase Mutador
+    def __init__(self,base):
+        self.base_nitrogenda = base
+    def crear_mutante(self,):
+        pass
+
+class Radiacion(Mutador):
+    def __init__(self,base):
+        super().__init__(base)
+    
     pass
 
+class Viruz(Mutador):
+    pass
