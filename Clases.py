@@ -1,3 +1,4 @@
+import random
 class Detector:
     # Valores que son necesarios para detectar mutantes
     __CANTIDAD_MAXIMA = 3 # Maximo de bases iguales
@@ -17,8 +18,8 @@ class Detector:
         self.contador = 1
 
 # Metodo principal que llama al metodo gestor
-    def detectar_mutantes(self):
-        return print(self.mutantes())
+    def detectar_mutantes(self,):
+        return self.mutantes()
     
 
     def mutantes(self):# Metodo que gestiona las distintas direciones
@@ -39,7 +40,7 @@ class Detector:
             else:
                 self.contador = 1
             if self.contador > self.__CANTIDAD_MAXIMA:
-                print(self.identidad)
+                #print(self.identidad)
                 return True
         return False
 
@@ -50,7 +51,8 @@ class Detector:
             fila = self.fila
             rango = self.__rango_secuencia
             if  self.verficacion(fila,rango) == True:
-                print("Horizontal detectada")
+                """print("Horizontal detectada")
+                print("")"""
                 return True
         return False
 
@@ -61,7 +63,8 @@ class Detector:
             fila = self.columna
             rango = (self.__rango_secuencia)
             if self.verficacion(fila,rango):
-                print("Vertical detectada")
+                """print("Vertical detectada")
+                print("")"""
                 return True
         return False
 
@@ -78,9 +81,27 @@ class Detector:
                 fila = self.elementos
                 rango = len(self.elementos)
                 if self.verficacion(fila,rango) == True:
-                    print("Diagonal detectada")
+                    """print("Diagonal detectada")
+                    print("")"""
                     return True
         return False
+
+class Sanador(Detector):
+    __BASES_NITROGENADAS = ["A","C","G","T"]
+    def __init__(self,adn):
+        super().__init__(adn)
+
+    def sanar_mutantes(self):
+        if self.detectar_mutantes() == True:
+            print("La secuencia de ADN contiene mutaciones, comienza la curación")
+            print("")
+            while True:
+                self.adn = [[random.choice(self.__BASES_NITROGENADAS) for i in range(6)] for i in range(6)]
+                if self.detectar_mutantes() == False:
+                    print("Secuencia curada con exito")
+                    print("")
+                    return self.adn
+                    break
 
 class Mutador():# Superclase Mutador
     def __init__(self,base):
