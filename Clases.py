@@ -99,9 +99,7 @@ class Sanador(Detector):
                 self.adn = [[random.choice(self.__BASES_NITROGENADAS) for i in range(6)] for i in range(6)]
                 if self.detectar_mutantes() == False:
                     print("Secuencia curada con exito")
-                    print("")
                     return self.adn
-                    break
 
 class Mutador():# Superclase Mutador
     def __init__(self,base):
