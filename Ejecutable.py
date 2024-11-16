@@ -11,7 +11,7 @@ def imprimir_secuencia(adn):
     print("\n".join("  ".join(adn[i][j] for j in range(6)) for i in range(6)))
     print("")
 
-def verificar_opciones(mensaje,opciones):
+def verificar_opciones(mensaje:str ,opciones: int):
     while True:
         try:
             option = int(input(mensaje))
@@ -23,7 +23,22 @@ def verificar_opciones(mensaje,opciones):
             print("Por favor ingrese un número válido.")
 
 def mutar(adn):
-    pass
+    while True:
+        base = input("Ingrese la base nitrogenada que desea que genera la mutación: ").upper()
+        if base in BASES_NITROGENADAS:
+            break
+        else:
+            print("Intentelo nuevamente. Secuencia Invalida")
+    option = verificar_opciones("Como queres mutar? Horizontal:1 | Vertical:2 | Diagonal:3 | :", (1,2,3))
+    if (option == 1) or (option == 2):
+        adn1 = Clases.Radiacion(adn,base,option)
+        adn = adn1.crear_mutante()
+        imprimir_secuencia(adn)
+    else:
+        adn1 = Clases.Viruz(adn,base,option)
+        adn = adn1.crear_mutante()
+        imprimir_secuencia(adn)
+        return adn
 
 def sanar(adn):
     adn1 = Clases.Sanador(adn)
@@ -34,8 +49,7 @@ def sanar(adn):
 def detectar(adn):
     adn1 = Clases.Detector(adn)
     if adn1.detectar_mutantes() == True:
-        print("La secuencia de ADN contiene mutaciones")
-        print("")
+        print("\nLa secuencia de ADN contiene mutaciones\n ")
         option = verificar_opciones("Que aciones tomara? Mutar ADN: 1 | Sanar ADN: 2|:  ", (1,2))
         print("")
         if option == 1:
@@ -47,7 +61,6 @@ def detectar(adn):
     else:
         print("Esta secuencia no contiene mutaciones")
         return adn
-
 
 while True:
     adn = [] 
@@ -87,10 +100,12 @@ while True:
         option = verificar_opciones("Quiere seguir usando esta secuenciade ADN | Si: 1 | No: 2 | :  ", (1,2))
         print("")
         if option == 1:
-            break
-        else:
+            limpiar_consola()
             pass
-    print("------------------------------------")
+        else:
+            break
+    limpiar_consola()
+
     print("Quiere salir o continuar con otra secuencia de AND?")
     option = verificar_opciones("Salir del programa? Si: 1 | No: 2 | :  ", (1,2))
     print("") 
