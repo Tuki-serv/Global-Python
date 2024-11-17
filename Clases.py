@@ -42,7 +42,7 @@ class Detector:
         self.identidad = lista
         self.rango = rango
         """
-        Si contador no supera la __cantidad maxima retorna false
+        Si contador no supera la cantidad maxima retorna false
         """
         for j in range(1, self.rango):# Bucle que itera sobre la lista
             """ Condición de verificación de lista
@@ -52,7 +52,7 @@ class Detector:
             else:
                 self.contador = 1 # Si no es igual, contador vuelve a 1
 
-            if self.contador > self.__CANTIDAD_MAXIMA: # Verifica si contador es mayor a la __cantidad maxima aceptable
+            if self.contador > self.__CANTIDAD_MAXIMA: # Verifica si contador es mayor a la cantidad maxima aceptable
                 return True
         return False
 
@@ -150,7 +150,7 @@ class Mutador():
     contenga un secuencia de más de 3 bases
     iguales
     """
-    __cantidad = 4 # Cantidad de veces que se repite la base
+    cantidad = 4 # Cantidad de veces que se repite la base
 
     def __init__(self,adn: list,base: str,direccion: int) -> None:# Metodo constructor
         self.adn = adn
@@ -223,9 +223,9 @@ class Radiacion(Mutador):
                 
                 # Determinar los desplazamientos según la dirección
                 if self.direccion == 1:  # Horizontal
-                    indices = [(fila, columna + i) for i in range(self.__cantidad)]
+                    indices = [(fila, columna + i) for i in range(self.cantidad)]
                 else:  # Vertical
-                    indices = [(fila + i, columna) for i in range(self.__cantidad)]
+                    indices = [(fila + i, columna) for i in range(self.cantidad)]
                 
                 # Cambia los valores de las coordenadas de la matriz por la base ingresada por el usuario
                 for x, y in indices:
@@ -251,11 +251,11 @@ class Viruz(Mutador):
     Muta en sentido Ascendente y Descendente
     """
     __coordenadas = {# Coordendas para iterar en diagonal
-    "fila:1" : [(3, 0), (2, 1), (1, 2), (0, 3)],
-    "fila:2" : [(4, 0), (3, 1), (2, 2), (1, 3), (0, 4)],
-    "fila:3" : [(5, 0), (4, 1), (3, 2), (2, 3), (1, 4), (0, 5)],
-    "fila:4" : [(5, 1), (4, 2), (3, 3), (2, 4), (1, 5)],
-    "fila:5" : [(5, 2), (4, 3), (3, 4), (2, 5)]
+    "fila:1" : [[3, 0], [2, 1], [1, 2], [0, 3]],
+    "fila:2" : [[4, 0], [3, 1], [2, 2], [1, 3], [0, 4]],
+    "fila:3" : [[5, 0], [4, 1], [3, 2], [2, 3], [1, 4], [0, 5]],
+    "fila:4" : [[5, 1], [4, 2], [3, 3], [2, 4], [1, 5]],
+    "fila:5" : [[5, 2], [4, 3], [3, 4], [2, 5]]
     }
 
     def __init__(self,adn: list,base: str,direccion: int) -> None: # Inicializa el método constructor de la superclase
@@ -268,8 +268,8 @@ class Viruz(Mutador):
         """
         while True:# Verifica si el usuario ingresa bien el valor que desea
             print("\nEn que sentido queres generar el mutante?")
-            direccion=int(input("\nAscendente: 1 | Descendente: 2 | : "))
-            if len(direccion) == 1 and direccion in (1,2):# Se comprueba si la entrada es la que corresponde
+            direccion=input("\nAscendente: 1 | Descendente: 2 | : ")
+            if len(direccion) == 1 and direccion in ("1","2"):# Se comprueba si la entrada es la que corresponde
                 return direccion
             else:
                 print("\nIntentelo devuelta")
@@ -353,7 +353,7 @@ class Viruz(Mutador):
                 inicio = secuencia.index(origen)# Se guarda el indice perteneciente al origen introducido
                 
                 # Cambia los valores de las coordenadas de la matriz por la base ingresada por el usuario
-                for i in range(self.__cantidad):
+                for i in range(self.cantidad):
                     fila, columna = secuencia[inicio + i]
                     self.adn[fila][columna] = self.base
                 

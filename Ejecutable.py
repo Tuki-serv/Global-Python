@@ -46,7 +46,7 @@ def mutar(adn: list) -> list:
     dentro de una variable para su uso posterior
     """
     while True:# Si se ingresa un valor incorreto se le pide que lo intente devuelta
-        base = input("\nIngrese la base nitrogenada que desea que genera la mutación: ").upper()
+        base = input("Ingrese la base nitrogenada que desea que genera la mutación: ").upper()
         if base in BASES_NITROGENADAS:# Se verifica si el input pertenece a las bases
             break
         else:
@@ -109,12 +109,12 @@ while True:# Segun quiera el usuario, se cierra el programa
     TAM_SECUENCIA = 6 # Tamaño de la matriz 6x6
 
     print("\nPara empezar tendra que incertar una secuencia de ADN")
-    print("\nSi coloca mal alguna secuencia de bases, se le pedira que la ingrese devuelta")
+    print("Si coloca mal alguna secuencia de bases, se le pedira que la ingrese devuelta")
 
     # Se crea una lista con la entrada del usuario
     for i in range(TAM_SECUENCIA):# Bucle de input de secuencia
         while True:# Bucle de verificación de input de secuencia
-            secuencia = input(f"\nIngrese la {i+1}º secuencia de 6 bases nitrogenadas: ").upper()
+            secuencia = input(f"Ingrese la {i+1}º secuencia de 6 bases nitrogenadas: ").upper()
             
             if len(secuencia) == TAM_SECUENCIA and all(base in BASES_NITROGENADAS for base in secuencia):
                 adn.append(list(secuencia))# Se agrega la lista a la matriz
@@ -132,8 +132,8 @@ while True:# Segun quiera el usuario, se cierra el programa
 
     # Se le pregunta al usuario que acción tomar
     while True:
-        print("\nQue es lo que desea hacer?")
-        option = verificar_opciones("\nDetectar mutantes: 1 | Mutar ADN: 2 | Sanar ADN: 3|:  ", (1,2,3))# Llamada a la función
+        print("Que es lo que desea hacer?")
+        option = verificar_opciones("Detectar mutantes: 1 | Mutar ADN: 2 | Sanar ADN: 3|:  ", (1,2,3))# Llamada a la función
 
         # Como interactuar con la matriz
         if option == 1:
@@ -144,7 +144,7 @@ while True:# Segun quiera el usuario, se cierra el programa
             adn = sanar(adn)# Llamada a la función
 
         # Se le pregunta si quiere seguir usando la matriz 
-        option = verificar_opciones("\nQuiere seguir usando esta secuenciade ADN | Si: 1 | No: 2 | :  ", (1,2))# Llamada a la función
+        option = verificar_opciones("Quiere seguir usando esta secuenciade ADN | Si: 1 | No: 2 | :  ", (1,2))# Llamada a la función
         print("")
         if option == 1:
             # Se le mostrara al usuario devuelta como interactuar con la matriz
