@@ -1,118 +1,169 @@
 import Clases
 import os
 
-def limpiar_consola():
+def limpiar_consola() -> None:
     if os.name == 'nt':  # Para Windows
         os.system('cls')
     else:  # Para sistemas Unix (Linux/macOS)
         os.system('clear')
 
-def imprimir_secuencia(adn):
+def separar() -> None:
+    """
+        Este método crea una línea para separar
+        se creo para mas facilidad en el uso
+        """
+    print("----------------------------------------------")
+
+def imprimir_secuencia(adn: list) -> None:
+    """
+    Imprime la matriz(secuencia ADN) ingresada
+    """
     print("\n".join("  ".join(adn[i][j] for j in range(6)) for i in range(6)))
     print("")
 
-def verificar_opciones(mensaje:str ,opciones: int):
-    while True:
+def verificar_opciones(mensaje:str ,opciones: int) -> int:
+    """
+    Verifica los inputs del usuario
+    """
+    while True:# Si se ingresa un valor incorreto se le pide que lo intente devuelta
         try:
             option = int(input(mensaje))
+            # Verifica que el input corresponda a algún elemento de opciones
             if option in opciones:
                 return option
             else:
-                print("Intentelo nuevamente")
-        except ValueError:
-            print("Por favor ingrese un número válido.")
+                separar()
+                print("\nIntentelo nuevamente")
+        except ValueError:# Entrada no valida
+            separar()
+            print("\nPor favor ingrese un número válido.")
 
-def mutar(adn):
-    while True:
-        base = input("Ingrese la base nitrogenada que desea que genera la mutación: ").upper()
-        if base in BASES_NITROGENADAS:
+def mutar(adn: list) -> list:
+    """
+    Función encargada de instanciar objetos
+    en la clases mutantes(Radiación, Viruz)
+    Guarda el retorno del objeto
+    dentro de una variable para su uso posterior
+    """
+    while True:# Si se ingresa un valor incorreto se le pide que lo intente devuelta
+        base = input("\nIngrese la base nitrogenada que desea que genera la mutación: ").upper()
+        if base in BASES_NITROGENADAS:# Se verifica si el input pertenece a las bases
             break
         else:
-            print("Intentelo nuevamente. Secuencia Invalida")
-    option = verificar_opciones("Como queres mutar? Horizontal:1 | Vertical:2 | Diagonal:3 | :", (1,2,3))
+            separar()
+            print("\nIntentelo nuevamente. Secuencia Invalida")
+
+    # Se le pregunta al usuario que medidas quiere tomar
+    option = verificar_opciones("\nComo queres mutar? Horizontal:1 | Vertical:2 | Diagonal:3 | :  ", (1,2,3))# Llamada a la función
+    
     if (option == 1) or (option == 2):
-        adn1 = Clases.Radiacion(adn,base,option)
-        adn = adn1.crear_mutante()
-        imprimir_secuencia(adn)
+        adn1 = Clases.Radiacion(adn,base,option)# Se crea un objeto en la Clase Radiación
+        adn = adn1.crear_mutante()# Se guarda la matriz
+        imprimir_secuencia(adn)# Se imprime la matriz
+        return adn# Retorna la matriz
     else:
-        adn1 = Clases.Viruz(adn,base,option)
-        adn = adn1.crear_mutante()
-        imprimir_secuencia(adn)
-        return adn
+        adn1 = Clases.Viruz(adn,base,option)# Se crea un objeto en la Clase Viruz
+        adn = adn1.crear_mutante()# Se guarda la matriz
+        imprimir_secuencia(adn)# Se imprime la matriz
+        return adn# Retorna la matriz
 
-def sanar(adn):
-    adn1 = Clases.Sanador(adn)
-    adn = adn1.sanar_mutantes()
-    imprimir_secuencia(adn)
-    return adn
+def sanar(adn: list) -> list:
+    """
+    Función encargada de instanciar objetos
+    en la Clase Sanador
+    Guarda el retorno del objeto 
+    dentro de una variable para su uso posterior
+    """
+    adn1 = Clases.Sanador(adn)# Se crea un objeto en la Clase Sanador
+    adn = adn1.sanar_mutantes()# Se guarda la matriz
+    imprimir_secuencia(adn)# Se imprime la matriz
+    return adn# Retorna la matriz
 
-def detectar(adn):
+def detectar(adn: list) -> list:
+    """
+    Función encargada de instanciar objetos
+    en la Clase Detector
+    Toma acciones dependiendo el retorno del método(detectar_mutantes)
+    """
     adn1 = Clases.Detector(adn)
+    # Acciones a tomar segun el retorno (detectar_mutantes)
     if adn1.detectar_mutantes() == True:
         print("\nLa secuencia de ADN contiene mutaciones\n ")
-        option = verificar_opciones("Que aciones tomara? Mutar ADN: 1 | Sanar ADN: 2|:  ", (1,2))
-        print("")
+        
+        # Se le pregunta al usuario que medidas quiere tomar
+        option = verificar_opciones("\nQue aciones tomara? Mutar ADN: 1 | Sanar ADN: 2|:  ", (1,2))# Llamada a la función
         if option == 1:
-            adn = mutar(adn)
-            return adn
+            adn = mutar(adn)# Llamada a la función
+            return adn# Se retorna la matriz
         else:
-            adn = sanar(adn)
-            return adn
+            adn = sanar(adn)# Llamada a la función
+            return adn# Se retonra la matriz
     else:
-        print("Esta secuencia no contiene mutaciones")
-        return adn
+        # Si el método(detectar_mutantes) retorna falso
+        print("\nEsta secuencia no contiene mutaciones")
+        return adn# Se retorna la función
 
-while True:
-    adn = [] 
-    BASES_NITROGENADAS = ["A","C","G","T"]
-    TAM_SECUENCIA = 6
+while True:# Segun quiera el usuario, se cierra el programa
+    adn = [] # Secuencia de ADN (matriz)
+    BASES_NITROGENADAS = ["A","C","G","T"] # Bases que se utilizan
+    TAM_SECUENCIA = 6 # Tamaño de la matriz 6x6
 
-    print("Para empezar tendra que incertar una secuencia de ADN")
-    print("Si coloca mal alguna secuencia de bases, se le pedira que la ingrese devuelta")
+    print("\nPara empezar tendra que incertar una secuencia de ADN")
+    print("\nSi coloca mal alguna secuencia de bases, se le pedira que la ingrese devuelta")
 
-    for i in range(TAM_SECUENCIA):# Bucle de de input de secuencia
+    # Se crea una lista con la entrada del usuario
+    for i in range(TAM_SECUENCIA):# Bucle de input de secuencia
         while True:# Bucle de verificación de input de secuencia
-            secuencia = input(f"Ingrese la {i+1}º secuencia de 6 bases nitrogenadas: ").upper()
+            secuencia = input(f"\nIngrese la {i+1}º secuencia de 6 bases nitrogenadas: ").upper()
+            
             if len(secuencia) == TAM_SECUENCIA and all(base in BASES_NITROGENADAS for base in secuencia):
-                adn.append(list(secuencia))
-                break
+                adn.append(list(secuencia))# Se agrega la lista a la matriz
+                break # Se sale del bucle
             else:
-                print("Intentelo nuevamente. Secuencia Invalida")
-    print("")
+                # Se le pide que ingrese devuelta la secuencia
+                separar()# Llamada a la función
+                print("\nIntentelo nuevamente. Secuencia Invalida")
+    limpiar_consola()# Llamada a la función
 
-    print("Esta es la secuecia de ADN que usted ingreso")
-    print("")
-    imprimir_secuencia(adn)
-    print("------------------------------------")
+    # Se le muestra al usuario la secuencia de ADN (matriz)
+    print("\nEsta es la secuecia de ADN que usted ingreso")
+    imprimir_secuencia(adn)# Llamada a la función
+    separar()# Llamada a la función
 
+    # Se le pregunta al usuario que acción tomar
     while True:
-        print("Que es lo que desea hacer?")
-        option = verificar_opciones("Detectar mutantes: 1 | Mutar ADN: 2 | Sanar ADN: 3|:  ", (1,2,3))
+        print("\nQue es lo que desea hacer?")
+        option = verificar_opciones("\nDetectar mutantes: 1 | Mutar ADN: 2 | Sanar ADN: 3|:  ", (1,2,3))# Llamada a la función
 
+        # Como interactuar con la matriz
         if option == 1:
-            adn = detectar(adn)
-            
+            adn = detectar(adn)# Llamada a la función
         elif option == 2:
-            adn = mutar(adn)
+            adn = mutar(adn)# Llamada a la función
         else:
-            adn = sanar(adn)
-            
-        option = verificar_opciones("Quiere seguir usando esta secuenciade ADN | Si: 1 | No: 2 | :  ", (1,2))
+            adn = sanar(adn)# Llamada a la función
+
+        # Se le pregunta si quiere seguir usando la matriz 
+        option = verificar_opciones("\nQuiere seguir usando esta secuenciade ADN | Si: 1 | No: 2 | :  ", (1,2))# Llamada a la función
         print("")
         if option == 1:
-            limpiar_consola()
+            # Se le mostrara al usuario devuelta como interactuar con la matriz
+            limpiar_consola()# Llamada a la función
+            print("\nEsta es la secuencia de ADN que esta usando")
+            imprimir_secuencia(adn)# Llamada a la función
             pass
         else:
             break
-    limpiar_consola()
+    limpiar_consola()# Llamada a la función
 
-    print("Quiere salir o continuar con otra secuencia de AND?")
-    option = verificar_opciones("Salir del programa? Si: 1 | No: 2 | :  ", (1,2))
-    print("") 
-    if option == 1:
+    # Se le pregunta si quiere cerrar el programa o introducir una nueva matriz
+    print("\nQuiere salir o continuar con otra secuencia de AND?")
+    option = verificar_opciones("\nSalir del programa? Si: 1 | No: 2 | :  ", (1,2))# Llamada a la función
+    if option == 1:# Salir programa| Sale del bucle infinito
         break
     else:
-        limpiar_consola()
+        # Se reinician todos los datos del programa para un nuevo uso
+        limpiar_consola()# Llamada a la función
 
 
 

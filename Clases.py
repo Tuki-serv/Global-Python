@@ -1,208 +1,375 @@
 import random
+import os
 class Detector:
+    """
+    Esta es la clase detector que verifica por cada dirección
+    de la matriz si existen mutantes
+    """
     # Valores que son necesarios para detectar mutantes
     __CANTIDAD_MAXIMA = 3 # Maximo de bases iguales
     rango_secuencia = 6 # Rango de las secuencias introducidas
     __coordenadas = {# Coordendas para iterar en diagonal
-    "d1" : [[3,0],[2,1],[1,2],[0,3]],
-    "d2" : [[4,0],[3,1],[2,2],[1,3],[0,4]],
-    "d3" : [[5,0],[4,1],[3,2],[2,3],[1,4],[0,5]],
-    "d4" : [[5,1],[4,2],[3,3],[2,4],[1,5]],
-    "d5" : [[5,2],[4,3],[3,4],[2,5]]
+    "d1" : [(3, 0), (2, 1), (1, 2), (0, 3)],
+    "d2" : [(4, 0), (3, 1), (2, 2), (1, 3), (0, 4)],
+    "d3" : [(5, 0), (4, 1), (3, 2), (2, 3), (1, 4), (0, 5)],
+    "d4" : [(5, 1), (4, 2), (3, 3), (2, 4), (1, 5)],
+    "d5" : [(5, 2), (4, 3), (3, 4), (2, 5)]
     }
 
 # Método constructor donde se define la referencia de la matriz
 # y también un contador de bases
-    def __init__(self,adn):
+    def __init__(self,adn: list) -> None:
         self.adn = adn
         self.contador = 1
 
 # Metodo principal que llama al metodo gestor
-    def detectar_mutantes(self,):
+    def detectar_mutantes(self) -> bool:
         return self.mutantes()
     
 
-    def mutantes(self):# Metodo que gestiona las distintas direciones
+    def mutantes(self) -> bool:# Metodo que gestiona las distintas direciones
+        """
+        Retorno True = Existen mutaciones en alguna dirección
+        Retorno False = No existen mutaciones en ninguna dirección
+        """
         if self.vertical() == True or self.horizontal()==True or self.diagonal() == True:
             return True
         else:
             return False
         
-    def verficacion(self, lista,rango): #Metodo de verificación
+    def verficacion(self, lista: int, rango: int) -> bool: #Metodo de verificación
         # Inicializa lo valores a trabajar
         self.identidad = lista
         self.rango = rango
+        """
+        Si contador no supera la __cantidad maxima retorna false
+        """
         for j in range(1, self.rango):# Bucle que itera sobre la lista
-            # Condición de verificación de lista
-            # Se evalua si se repiten bases más de 3 veces
-            if self.identidad[j] == self.identidad[j-1]:
-                self.contador += 1
+            """ Condición de verificación de lista
+            Se evalua si se repiten bases más de 3 veces"""
+            if self.identidad[j] == self.identidad[j-1]:# Verifica si un elemento es igual a su anterior
+                self.contador += 1 # Si es igual, contador aumenta en 1 
             else:
-                self.contador = 1
-            if self.contador > self.__CANTIDAD_MAXIMA:
+                self.contador = 1 # Si no es igual, contador vuelve a 1
+
+            if self.contador > self.__CANTIDAD_MAXIMA: # Verifica si contador es mayor a la __cantidad maxima aceptable
                 return True
         return False
 
     """
-    Los metodos de dirección en esta clase generan una lista de la secuencia correspondiente
+    Los metodos de dirección (horizonta, vertical, diagonal) en esta clase generan una lista de la
+    secuencia a verificar
     esta lista es pasada al método de verificación donde se evalua si contine mutantes
     """
 
-    def horizontal(self):# Dirección horizontal
-        for i in range(self.rango_secuencia):# Añade los elementos a una lista y la  verifica
+    def horizontal(self) -> bool:# Dirección horizontal
+        """
+        Crea una lista y la verifica
+        Si ninguna lista devuelve True, entonces devuelve False
+        """
+        for fila in range(self.rango_secuencia):# Itera por toda la matriz
             self.contador = 1
-            self.fila = self.adn[i]
+            self.fila = self.adn[fila]#Seleciona una sublista de la matriz
             fila = self.fila
             rango = self.rango_secuencia
-            if  self.verficacion(fila,rango) == True:
+            if  self.verficacion(fila,rango) == True:# Verificación de la lista
                 return True
         return False
 
-    def vertical(self):# Dirección vertical
-        for i in range(self.rango_secuencia):# Añade los elementos a una lista y la  verifica
+    def vertical(self ) -> bool:# Dirección vertical
+        """
+        Crea una lista y la verifica
+        Si ninguna lista devuelve True, entonces devuelve False
+        """
+        for columnas in range(self.rango_secuencia):# Itera por toda la matriz
             self.contador = 1
-            self.columna = [self.adn[j][i] for j in range(self.rango_secuencia)]
+            self.columna = [self.adn[fila][columnas] for fila in range(self.rango_secuencia)] # Crea una lista con las columnas
             fila = self.columna
             rango = (self.rango_secuencia)
-            if self.verficacion(fila,rango):
+            if self.verficacion(fila,rango) == True:# Verificación de la lista
                 return True
         return False
 
-    def diagonal(self):# Dirección diagonal
+    def diagonal(self) -> bool:# Dirección diagonal
+        """
+        Crea una lista y la verifica
+        Segun el valor de control, verifica en ascendente  y en descendente
+        Si ninguna lista devuelve True, entonces devuelve False
+        """
         self.orden = 2 # Valor de control
-        self.contador = 1
         for i in range(self.orden):# Segun el valor de control devuelve un lista
-            if i == 1:# La lista puede ser la original o la inversa
-                self.matriz = [list(reversed(sublista)) for sublista in self.adn]
+            self.contador = 1
+            if i == 1:# La lista puede ser la original o la inversa segun la iteración de la variable de control
+                self.matriz = [list(reversed(sublista)) for sublista in self.adn]# Se genera la inversa de cada sublista
             else:
                 self.matriz = self.adn
-            for d in self.__coordenadas.values():# Añade los elementos a una lista y la  verifica
-                self.elementos = [self.matriz[j[0]][j[1]] for j in d]
+            for d in self.__coordenadas.values():# Itera por los valores de las coordenadas
+                self.elementos = [self.matriz[x][i] for x,i in d]# Crea una lista con los valores en las coordenadas dadas
                 fila = self.elementos
                 rango = len(self.elementos)
-                if self.verficacion(fila,rango) == True:
+                if self.verficacion(fila,rango) == True:# Verificación de la lista
                     return True
         return False
 
 class Sanador(Detector):
-    __BASES_NITROGENADAS = ["A","C","G","T"]
-    def __init__(self,adn):
-        super().__init__(adn)
+    """
+    Esta la Clase sanador, hereda métodos de la Clase Detector
 
-    def sanar_mutantes(self):# En este metodo se genera una secuencia nueva si el método heredado retorna verdadero
+    """
+    __BASES_NITROGENADAS = ["A","C","G","T"] # Lista de las bases que contiene la matriz
+    def __init__(self,adn: list) -> None:
+        super().__init__(adn) # Inicializa el método constructor de la superclase
+
+    def sanar_mutantes(self) -> list:
+        """
+        En este metodo se genera una matriz nueva
+        si el método heredado (detectar_mutantes) retorna verdadero
+        Caso contrario retorna la matriz introducida
+        """
         if self.detectar_mutantes() == True:
-            print("La secuencia de ADN contiene mutaciones, comienza la curación\n""")
+            print("\nLa secuencia de ADN contiene mutaciones, comienza la curación")
             while True:
+                """
+                Mientras la nueva matriz contenga mutaciones, se generara otra matriz
+                """
+                # Se genera una nueva matriz con las bases selecionadas aleatoriamente
                 self.adn = [[random.choice(self.__BASES_NITROGENADAS) for i in range(self.rango_secuencia)] for i in range(self.rango_secuencia)]
-                if self.detectar_mutantes() == False:
-                    print("Secuencia curada con exito")
+                if self.detectar_mutantes() == False: # Se verifica que la nueva matriz no contenga mutantes 
+                    print("\nSecuencia curada con exito")
                     return self.adn
         else:
-            print("La secuencia de ADN no contiene mutaciones")
+            print("\nLa secuencia de ADN no contiene mutaciones")
+            return self.adn
 
-class Mutador():# Superclase Mutador
-    rango_secuencia = 6
-    cantidad = 4
+class Mutador():
+    """
+    Esta es la superclase mutador, contiene métodos que van
+    a ser utilizados por las clases hijas
 
-    def __init__(self,adn,base,direccion):
+    Se considera mutar a que una matriz(AND)
+    contenga un secuencia de más de 3 bases
+    iguales
+    """
+    __cantidad = 4 # Cantidad de veces que se repite la base
+
+    def __init__(self,adn: list,base: str,direccion: int) -> None:# Metodo constructor
         self.adn = adn
         self.base = base
         self.direccion = direccion
 
-    def crear_mutante(self,):# Método abtracto
-        print("Elija la cordenada donde quiere genrar el mutante\n")
-        self.mostras_coordenadas()
-        print("----------------------------------")
+    def crear_mutante(self) -> None:# Método polimorfico que crea mutaciones
+        """
+        Método polimorfico que crea mutaciones
+        tambíen llama a otros metodos necesarios para mejorar la visualización
+        """
+        self.separar()
+        print("\nElija donde quiere generar el mutante")
+        self.mostrar_coordenadas()
+        self.separar()
 
-    def mostras_coordenadas(self):# Método que imprime una matriz para que el usuario elija el lugar
-        normal = [[f"F:{i} C:{j}| " for j in range(6)] for i in range(6)]
-        print("F: Fila | C: Columna")
-        return print("\n".join("  ".join(normal[i][j] for j in range(6)) for i in range(6)))
-        
+    def mostrar_coordenadas(self) -> None:
+        """
+        Método que imprime una matriz con el fin de que el usuario
+        pueda ver las coordenadas de todas las posiciones 
+        """
+        normal = [[f"F:{i} C:{j}| " for j in range(6)] for i in range(6)] # Se crea una matriz
+        print("\nF: Fila | C: Columna") # Muestra al usuario como guiarse por la matriz
+        self.separar()
+        print("\n".join("  ".join(normal[i][j] for j in range(6)) for i in range(6)))# Imprime la matriz
+    
+    def separar(self) -> None:
+        """
+        Este método crea una línea para separar
+        se creo para mas facilidad en el uso
+        """
+        print("---------------------------------------------------------------")
+    
+    def limpiar_consola(self) -> None:
+        """
+        Método que limpia la consola de ser necesario
+        Su uso es cuando ya no es necesaria cierta información
+        """
+        if os.name == 'nt':  # Para Windows
+            os.system('cls')
+        else:  # Para sistemas Unix (Linux/macOS)
+            os.system('clear')
+
 
 class Radiacion(Mutador):
-    def __init__(self,adn,base,direccion):
+    """
+    Subclase encargada de mutar el ADN
+    Solo muta en Horizontal y Vertical
+    """
+    def __init__(self,adn: list,base: str,direccion: int) -> None:# Inicializa el método contructor de la superclase
         super().__init__(adn,base,direccion)
 
-    def crear_mutante(self):
-        if self.direccion == 1:
-            while True:
-                try:
-                    super().crear_mutante()
-                    origen = list(input("Ingrese la coordenada (fila, columna): "))
-                    origen = list(map(int, origen))
+    def crear_mutante(self) -> list:
+        """
+        Método heredado modificado
+        Mientras se respete el fomato este método retorna una matriz modificada
+        en caso contrario se le pedira al usuario que lo intente de nuevo
+        """
+        while True:
+            try:
+                # Llama al método padre
+                super().crear_mutante()
+                print("\nMutante Horizontal") if self.direccion == 1 else print("\nMutante Vertical") # Muestra la dirección del usuario
 
-                    for i in range(origen[1], origen[1] + self.cantidad):
-                        self.adn[origen[0]][i] = self.base
-                        
-                    print("Mutante creado")
-                    return self.adn
+                # Pedir las coordenadas desde donde se inicia la mutación
+                origen = input("\nIngrese la coordenada (Fila, Columna| Formato Ejemplo: 21): ")
+                if len(origen) != 2:# Se crea una instancia de error si se la entrada es diferente al formato
+                    raise ValueError("Ingrese solamente dos números seguidos: xy")
+                fila, columna = map(int, origen)# Descompongo la lista en dos variables
                 
-                except ValueError :
-                    print(f"Error. Ingrese solo números")
-                except IndexError:
-                    print("Error: Fuera de rango de la matriz, la base se repite 4 veces dentro de un rango 0 a 5")
-        else:
-            while True:
-                try:
-                    super().crear_mutante()
-                    origen = list(input("Ingrese la coordenada (fila, columna): "))
-                    origen = list(map(int, origen))
-
-                    for i in range(origen[0], origen[0] + self.cantidad):
-                        self.adn[i][origen[1]] = self.base
-
-                    print("Mutante creado")
-                    return self.adn
+                # Determinar los desplazamientos según la dirección
+                if self.direccion == 1:  # Horizontal
+                    indices = [(fila, columna + i) for i in range(self.__cantidad)]
+                else:  # Vertical
+                    indices = [(fila + i, columna) for i in range(self.__cantidad)]
                 
-                except ValueError :
-                    print(f"Error. Ingrese solo números")
-                except IndexError:
-                    print("Error: Fuera de rango de la matriz, la base se repite 4 veces dentro de un rango 0 a 5")
+                # Cambia los valores de las coordenadas de la matriz por la base ingresada por el usuario
+                for x, y in indices:
+                    self.adn[x][y] = self.base
+                
+                # Se retorna la matriz modificada
+                print("\nMutante creado")
+                return self.adn
+            
+            # Razones para pedir al usuario que lo intente devuelta
+            except ValueError as error:# Ingresar mal los datos
+                self.limpiar_consola()
+                self.separar()
+                print(f"\nError. {error}")
+            except IndexError:# Ingresar un origen que produzca iterar fuera de la matriz
+                self.limpiar_consola()
+                self.separar()
+                print("\nError: Fuera de rango de la matriz, la base se repite 4 veces dentro de un rango 0 a 5")
 
 class Viruz(Mutador):
+    """
+    Subclase encargada de mutar el ADN en diagonal
+    Muta en sentido Ascendente y Descendente
+    """
     __coordenadas = {# Coordendas para iterar en diagonal
-    "d1" : [[3,0],[2,1],[1,2],[0,3]],
-    "d2" : [[4,0],[3,1],[2,2],[1,3],[0,4]],
-    "d3" : [[5,0],[4,1],[3,2],[2,3],[1,4],[0,5]],
-    "d4" : [[5,1],[4,2],[3,3],[2,4],[1,5]],
-    "d5" : [[5,2],[4,3],[3,4],[2,5]]
+    "fila:1" : [(3, 0), (2, 1), (1, 2), (0, 3)],
+    "fila:2" : [(4, 0), (3, 1), (2, 2), (1, 3), (0, 4)],
+    "fila:3" : [(5, 0), (4, 1), (3, 2), (2, 3), (1, 4), (0, 5)],
+    "fila:4" : [(5, 1), (4, 2), (3, 3), (2, 4), (1, 5)],
+    "fila:5" : [(5, 2), (4, 3), (3, 4), (2, 5)]
     }
 
-    def __init__(self,adn,base,direccion):
+    def __init__(self,adn: list,base: str,direccion: int) -> None: # Inicializa el método constructor de la superclase
         super().__init__(adn,base,direccion)
 
-    def sentido(self):
-        print("En que sentido queres generar el mutante?")
-        while True:
-            self.direccion=int(input("Ascendente: 1 | Descendente: 2 | : "))
-            if self.direccion in (1,2):
+    def sentido(self) -> int:
+        """
+        Se le pide al usuario que elija el sentido en diagonal
+        self.dirección adopta el valor y se utiliza para refererirse al sentido elegido
+        """
+        while True:# Verifica si el usuario ingresa bien el valor que desea
+            print("\nEn que sentido queres generar el mutante?")
+            direccion=int(input("\nAscendente: 1 | Descendente: 2 | : "))
+            if len(direccion) == 1 and direccion in (1,2):# Se comprueba si la entrada es la que corresponde
+                return direccion
+            else:
+                print("\nIntentelo devuelta")
+
+    def mostrar_coordenadas(self) -> None:
+        """
+        Se cambio la lógica para adaptarse a la subclase 
+        Sigue teniendo el mismo fin (ayudar al usuario a ver graficamente la matriz)
+        Pero esta vez muestra las filas que puede elegir para mutar
+        Las filas se muestran segun el sentido elegido
+        """
+        matriz = [
+            ["------", "------", "------", "Fila:1", "Fila:2", "Fila:3"],
+            ["------", "------", "Fila:1", "Fila:2", "Fila:3", "Fila:4"],
+            ["------", "Fila:1", "Fila:2", "Fila:3", "Fila:4", "Fila:5"],
+            ["Fila:1", "Fila:2", "Fila:3", "Fila:4", "Fila:5", "------"],
+            ["Fila:2", "Fila:3", "Fila:4", "Fila:5", "------", "------"],
+            ["Fila:3", "Fila:4", "Fila:5", "------", "------", "------"]
+        ]
+        if self.direccion == 1:# Sentido ascente
+            self.separar()
+            print("\n".join("  ".join(matriz[i][j] for j in range(6)) for i in range(6)))
+        else:
+            # Sentido descendente
+            matriz = self.revertir(matriz) # Se revierte la matriz
+            self.separar()
+            print("\n".join("  ".join(matriz[i][j] for j in range(6)) for i in range(6)))
+
+    def revertir(self,matriz: list) -> list:
+        """
+        Método que retorna una versión revertida de las sublistas de la matriz
+        """
+        return [list(reversed(sublista)) for sublista in matriz]
+
+    def elegir_filas(self) -> list:
+        """
+        Se le pide al usuario que igrese la fila que desea mutar
+        Si el input corresponde al formato retornara e imprimira
+        las coordenadas de los elementos de la fila dependiendo
+        el sentido (self.direccion)
+        """
+        while True:# Se verifica que el usuario ingrese de forma correta el input
+            fila  = input("\nIngrese la fila seleccionada: (Formato: Fila:1) ").lower()
+
+            # Se verfica que la entrada corresponda a las claves del diccionario de coordenadas
+            if fila in self.__coordenadas:
                 break
+            else:
+                print("Ingreso incorrecto, siga el formato")
 
-    def crear_mutante(self):
-        if self.direccion == 1:
-            while True:
-                try:
-                    origen = list(input("Ingrese la coordenada (fila, columna): "))
-                    origen = list(map(int, origen))
+        # Retorna el valor de la clave introducida segun el sentido, la clave es una lista con coordendass
+        if self.direccion == 1: # Ascendente
+            print(f"\nHas seleccionado la {fila}. Coordenadas: {self.__coordenadas[fila]}")
+            return self.__coordenadas[fila]
+        else:
+            # Descendente
+            coordenadas = list(reversed(self.__coordenadas[fila])) # Revierte la lista de coordenadas
+            print(f"\nHas seleccionado la {fila}. Coordenadas: {coordenadas}")
+            return coordenadas
 
-                    for d in self.__coordenadas.values():# Añade los elementos a una lista y la  verifica
-                        self.elementos = [self.adn[j[0]][j[1]] for j in d]
-                    
-                    
-                    pass 
-                except:
-                    pass
-        pass
+    def crear_mutante(self) -> list:
+        """
+        Método heredado modificado
+        Mientras se respete el fomato este método retorna una matriz modificada
+        en caso contrario se le pedira al usuario que lo intente de nuevo
+        """
+        self.direccion = self.sentido()# Se llama al método de direcciones
+        while True:
+            try:
+                super().crear_mutante()# Llama al método padre
+                print("\nMutante Ascendente") if self.direccion == 1 else print("\nMutante Descendente")# Muestra la dirección del usuario
 
-    
-"""
-adn = [
-    ['A', 'C', 'G', 'T', 'A', 'C'],
-    ['G', 'T', 'A', 'C', 'G', 'T'],
-    ['A', 'C', 'G', 'T', 'A', 'C'],
-    ['G', 'T', 'A', 'C', 'G', 'T'],
-    ['A', 'C', 'G', 'T', 'A', 'C'],
-    ['G', 'T', 'A', 'C', 'G', 'T']
-]
-"""
+                # Se llama al método para determinar con que coordenadas trabajar
+                secuencia =self.elegir_filas()
+
+                # Pedir las coordenadas desde donde se inicia la mutación
+                origen = list(input("\nIngrese la coordenada (fila, columna. Ej: 21): "))
+                origen = list(map(int, origen))
+                if origen not in secuencia :# Se crea una instancia de error si se la entrada es diferente al formato
+                    raise ValueError("\nIngrese solamente el par de coordenadas dentro de la fila")
+                inicio = secuencia.index(origen)# Se guarda el indice perteneciente al origen introducido
+                
+                # Cambia los valores de las coordenadas de la matriz por la base ingresada por el usuario
+                for i in range(self.__cantidad):
+                    fila, columna = secuencia[inicio + i]
+                    self.adn[fila][columna] = self.base
+                
+                # Según la dirección se invierte la matriz o no
+                if self.direccion == 1:
+                    return self.adn
+                else:
+                    adn = self.adn
+                    return self.revertir(adn)# Retorna una versión revertida de la matriz
+
+                # Razones para pedir al usuario que lo intente devuelta
+            except ValueError as error:# Ingresar mal los datos
+                self.limpiar_consola()
+                self.separar()
+                print(f"\nError. {error}")
+            except IndexError:# Ingresar un origen que produzca iterar fuera de la matriz
+                self.limpiar_consola()
+                self.separar()
+                print("\Error: Fuera de rango de la matriz, la base se repite 4 veces dentro del rango de la fila")
