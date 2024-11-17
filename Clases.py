@@ -1,12 +1,13 @@
 import random
 import os
+
 class Detector:
     """
     Esta es la clase detector que verifica por cada dirección
     de la matriz si existen mutantes
     """
     # Valores que son necesarios para detectar mutantes
-    __CANTIDAD_MAXIMA = 3 # Maximo de bases iguales
+    CANTIDAD_MAXIMA = 3 # Maximo de bases iguales
     rango_secuencia = 6 # Rango de las secuencias introducidas
     __coordenadas = {# Coordendas para iterar en diagonal
     "d1" : [(3, 0), (2, 1), (1, 2), (0, 3)],
@@ -32,12 +33,12 @@ class Detector:
         Retorno True = Existen mutaciones en alguna dirección
         Retorno False = No existen mutaciones en ninguna dirección
         """
-        if self.vertical() == True or self.horizontal()==True or self.diagonal() == True:
+        if  self.direcciones("horizontal") or self.direcciones("vertical") or self.direcciones("diagonal") or self.direcciones("diagonal.invertida"):
             return True
         else:
             return False
         
-    def verficacion(self, lista: int, rango: int) -> bool: #Metodo de verificación
+    def verficacion(self, lista: list, rango: int) -> bool: #Metodo de verificación
         # Inicializa lo valores a trabajar
         self.identidad = lista
         self.rango = rango
@@ -52,65 +53,41 @@ class Detector:
             else:
                 self.contador = 1 # Si no es igual, contador vuelve a 1
 
-            if self.contador > self.__CANTIDAD_MAXIMA: # Verifica si contador es mayor a la cantidad maxima aceptable
+            if self.contador > self.CANTIDAD_MAXIMA: # Verifica si contador es mayor a la cantidad maxima aceptable
                 return True
         return False
 
-    """
-    Los metodos de dirección (horizonta, vertical, diagonal) en esta clase generan una lista de la
-    secuencia a verificar
-    esta lista es pasada al método de verificación donde se evalua si contine mutantes
-    """
-
-    def horizontal(self) -> bool:# Dirección horizontal
+    def direcciones(self, direccion: str) -> bool:
         """
-        Crea una lista y la verifica
-        Si ninguna lista devuelve True, entonces devuelve False
+        Crea una lista segun la dirección y la verifica
         """
-        for fila in range(self.rango_secuencia):# Itera por toda la matriz
-            self.contador = 1
-            self.fila = self.adn[fila]#Seleciona una sublista de la matriz
-            fila = self.fila
-            rango = self.rango_secuencia
-            if  self.verficacion(fila,rango) == True:# Verificación de la lista
+        if direccion == "horizontal":
+            secuencias = [self.adn[fila] for fila in range(self.rango_secuencia)]
+        elif direccion == "vertical":
+            secuencias = [[self.adn[fila][columna] for fila in range(self.rango_secuencia)] for columna in range(self.rango_secuencia)]
+        elif direccion == "diagonal":
+            secuencias = self.diagonales(1)
+        elif direccion == "diagonal.invertida":
+            secuencias = self.diagonales(2)
+        for secuecia in secuencias:# Verifica
+            if self.verficacion(secuecia,len(secuecia)):
                 return True
         return False
 
-    def vertical(self ) -> bool:# Dirección vertical
+    def diagonales(self,control: int) -> list:
         """
-        Crea una lista y la verifica
-        Si ninguna lista devuelve True, entonces devuelve False
+        Genera todas las diagonales de la matriz segun las coordenadas (ascendentes y descendentes).
         """
-        for columnas in range(self.rango_secuencia):# Itera por toda la matriz
-            self.contador = 1
-            self.columna = [self.adn[fila][columnas] for fila in range(self.rango_secuencia)] # Crea una lista con las columnas
-            fila = self.columna
-            rango = (self.rango_secuencia)
-            if self.verficacion(fila,rango) == True:# Verificación de la lista
-                return True
-        return False
-
-    def diagonal(self) -> bool:# Dirección diagonal
-        """
-        Crea una lista y la verifica
-        Segun el valor de control, verifica en ascendente  y en descendente
-        Si ninguna lista devuelve True, entonces devuelve False
-        """
-        self.orden = 2 # Valor de control
-        for i in range(self.orden):# Segun el valor de control devuelve un lista
-            self.contador = 1
-            if i == 1:# La lista puede ser la original o la inversa segun la iteración de la variable de control
-                self.matriz = [list(reversed(sublista)) for sublista in self.adn]# Se genera la inversa de cada sublista
-            else:
-                self.matriz = self.adn
-            for d in self.__coordenadas.values():# Itera por los valores de las coordenadas
-                self.elementos = [self.matriz[x][i] for x,i in d]# Crea una lista con los valores en las coordenadas dadas
-                fila = self.elementos
-                rango = len(self.elementos)
-                if self.verficacion(fila,rango) == True:# Verificación de la lista
-                    return True
-        return False
-
+        diagonales = []
+        if control == 1:
+            for i in self.__coordenadas.values():
+                diagonales.append([self.adn[x][y] for x, y in i])
+        else: 
+            matriz = self.adn
+            matriz = [list(reversed(sublista)) for sublista in self.adn]
+            for j in self.__coordenadas.values():
+                diagonales.append([matriz[x][y] for x, y in j])
+        return diagonales
 class Sanador(Detector):
     """
     Esta la Clase sanador, hereda métodos de la Clase Detector
@@ -267,8 +244,9 @@ class Viruz(Mutador):
         self.dirección adopta el valor y se utiliza para refererirse al sentido elegido
         """
         while True:# Verifica si el usuario ingresa bien el valor que desea
+            self.separar()
             print("\nEn que sentido queres generar el mutante?")
-            direccion=input("\nAscendente: 1 | Descendente: 2 | : ")
+            direccion= input("Ascendente: 1 | Descendente: 2 | : ")
             if len(direccion) == 1 and direccion in ("1","2"):# Se comprueba si la entrada es la que corresponde
                 return direccion
             else:
@@ -312,7 +290,7 @@ class Viruz(Mutador):
         el sentido (self.direccion)
         """
         while True:# Se verifica que el usuario ingrese de forma correta el input
-            fila  = input("\nIngrese la fila seleccionada: (Formato: Fila:1) ").lower()
+            fila  = input("Ingrese la fila seleccionada: (Formato: Fila:1) ").lower()
 
             # Se verfica que la entrada corresponda a las claves del diccionario de coordenadas
             if fila in self.__coordenadas:
@@ -322,12 +300,12 @@ class Viruz(Mutador):
 
         # Retorna el valor de la clave introducida segun el sentido, la clave es una lista con coordendass
         if self.direccion == 1: # Ascendente
-            print(f"\nHas seleccionado la {fila}. Coordenadas: {self.__coordenadas[fila]}")
+            print(f"Has seleccionado la {fila}. Coordenadas: {self.__coordenadas[fila]}")
             return self.__coordenadas[fila]
         else:
             # Descendente
             coordenadas = list(reversed(self.__coordenadas[fila])) # Revierte la lista de coordenadas
-            print(f"\nHas seleccionado la {fila}. Coordenadas: {coordenadas}")
+            print(f"Has seleccionado la {fila}. Coordenadas: {coordenadas}")
             return coordenadas
 
     def crear_mutante(self) -> list:
