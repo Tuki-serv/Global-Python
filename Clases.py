@@ -172,7 +172,7 @@ class Mutador():
     def limpiar_consola(self) -> None:
         """
         Método que limpia la consola de ser necesario
-        Su uso es cuando ya no es necesaria cierta información
+        Su uso es cuando ya no es necesaria mostrar cierta información
         """
         if os.name == 'nt':  # Para Windows
             os.system('cls')
@@ -306,7 +306,7 @@ class Viruz(Mutador):
         """
         while True:
             try:
-
+                self.separar()
                 print("\nElija donde quiere generar el mutante diagonal")
                 print("Mutante Ascendente") if self.direccion == 1 else print("\nMutante Descendente")# Muestra la dirección del usuario
                 self.mostrar_coordenadas()
@@ -317,7 +317,7 @@ class Viruz(Mutador):
                 # Pedir las coordenadas desde donde se inicia la mutación
                 origen = list(input("\nIngrese la coordenada (fila, columna. Ej: 21): "))
                 origen = list(map(int, origen))
-                if origen not in secuencia :# Se crea una instancia de error si se la entrada es diferente al formato
+                if origen not in secuencia and len(origen) != 2:# Se crea una instancia de error si se la entrada es diferente al formato
                     raise ValueError("\nIngrese solamente el par de coordenadas dentro de la fila")
                 inicio = secuencia.index(origen)# Se guarda el indice perteneciente al origen introducido
                 
@@ -341,4 +341,4 @@ class Viruz(Mutador):
             except IndexError:# Ingresar un origen que produzca iterar fuera de la matriz
                 self.limpiar_consola()
                 self.separar()
-                print("\Error: Fuera de rango de la matriz, la base se repite 4 veces dentro del rango de la fila")
+                print("\nError: Fuera de rango de la matriz | RECUERDE: la base se repite 4 veces dentro del rango de la fila")
