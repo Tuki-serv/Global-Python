@@ -9,7 +9,7 @@ class Detector:
     # Valores que son necesarios para detectar mutantes
     CANTIDAD_MAXIMA = 3 # Maximo de bases iguales
     rango_secuencia = 6 # Rango de las secuencias introducidas
-    __coordenadas = {# Coordendas para iterar en diagonal
+    coordenadas = {# Coordendas para iterar en diagonal
     "d1" : [(3, 0), (2, 1), (1, 2), (0, 3)],
     "d2" : [(4, 0), (3, 1), (2, 2), (1, 3), (0, 4)],
     "d3" : [(5, 0), (4, 1), (3, 2), (2, 3), (1, 4), (0, 5)],
@@ -80,12 +80,12 @@ class Detector:
         """
         diagonales = []
         if control == 1:
-            for i in self.__coordenadas.values():
+            for i in self.coordenadas.values():
                 diagonales.append([self.adn[x][y] for x, y in i])
         else: 
             matriz = self.adn
             matriz = [list(reversed(sublista)) for sublista in self.adn]
-            for j in self.__coordenadas.values():
+            for j in self.coordenadas.values():
                 diagonales.append([matriz[x][y] for x, y in j])
         return diagonales
 class Sanador(Detector):
@@ -126,23 +126,31 @@ class Mutador():
     Se considera mutar a que una matriz(AND)
     contenga un secuencia de más de 3 bases
     iguales
-    """
-    cantidad = 4 # Cantidad de veces que se repite la base
+    """ # Cantidad de veces que se repite la base
 
-    def __init__(self,adn: list,base: str,direccion: int) -> None:# Metodo constructor
-        self.adn = adn
-        self.base = base
-        self.direccion = direccion
+    def __init__(self) -> None:# Metodo constructor
+        self.cantidad = 4
+        self.coordenadas = {# Coordendas para iterar en diagonal
+    "fila:1" : [[3, 0], [2, 1], [1, 2], [0, 3]],
+    "fila:2" : [[4, 0], [3, 1], [2, 2], [1, 3], [0, 4]],
+    "fila:3" : [[5, 0], [4, 1], [3, 2], [2, 3], [1, 4], [0, 5]],
+    "fila:4" : [[5, 1], [4, 2], [3, 3], [2, 4], [1, 5]],
+    "fila:5" : [[5, 2], [4, 3], [3, 4], [2, 5]]
+    }
+        #self.adn = adn
+        #self.base = base
+        #self.direccion = direccion
 
     def crear_mutante(self) -> None:# Método polimorfico que crea mutaciones
         """
         Método polimorfico que crea mutaciones
         tambíen llama a otros metodos necesarios para mejorar la visualización
         """
-        self.separar()
+        pass
+        """self.separar()
         print("\nElija donde quiere generar el mutante")
         self.mostrar_coordenadas()
-        self.separar()
+        self.separar()"""
 
     def mostrar_coordenadas(self) -> None:
         """
@@ -177,10 +185,13 @@ class Radiacion(Mutador):
     Subclase encargada de mutar el ADN
     Solo muta en Horizontal y Vertical
     """
-    def __init__(self,adn: list,base: str,direccion: int) -> None:# Inicializa el método contructor de la superclase
-        super().__init__(adn,base,direccion)
+    def __init__(self) -> None:# Inicializa el método contructor de la superclase
+        super().__init__()
 
-    def crear_mutante(self) -> list:
+    def crear_mutante(self,adn: list,base: str,direccion: int) -> list:
+        self.adn = adn
+        self.base = base
+        self.direccion = direccion
         """
         Método heredado modificado
         Mientras se respete el fomato este método retorna una matriz modificada
@@ -188,10 +199,9 @@ class Radiacion(Mutador):
         """
         while True:
             try:
-                # Llama al método padre
-                super().crear_mutante()
+                print("\nElija donde quiere generar el mutante")
                 print("\nMutante Horizontal") if self.direccion == 1 else print("\nMutante Vertical") # Muestra la dirección del usuario
-
+                self.mostrar_coordenadas()
                 # Pedir las coordenadas desde donde se inicia la mutación
                 origen = input("\nIngrese la coordenada (Fila, Columna| Formato Ejemplo: 21): ")
                 if len(origen) != 2:# Se crea una instancia de error si se la entrada es diferente al formato
@@ -227,30 +237,9 @@ class Viruz(Mutador):
     Subclase encargada de mutar el ADN en diagonal
     Muta en sentido Ascendente y Descendente
     """
-    __coordenadas = {# Coordendas para iterar en diagonal
-    "fila:1" : [[3, 0], [2, 1], [1, 2], [0, 3]],
-    "fila:2" : [[4, 0], [3, 1], [2, 2], [1, 3], [0, 4]],
-    "fila:3" : [[5, 0], [4, 1], [3, 2], [2, 3], [1, 4], [0, 5]],
-    "fila:4" : [[5, 1], [4, 2], [3, 3], [2, 4], [1, 5]],
-    "fila:5" : [[5, 2], [4, 3], [3, 4], [2, 5]]
-    }
 
-    def __init__(self,adn: list,base: str,direccion: int) -> None: # Inicializa el método constructor de la superclase
-        super().__init__(adn,base,direccion)
-
-    def sentido(self) -> int:
-        """
-        Se le pide al usuario que elija el sentido en diagonal
-        self.dirección adopta el valor y se utiliza para refererirse al sentido elegido
-        """
-        while True:# Verifica si el usuario ingresa bien el valor que desea
-            self.separar()
-            print("\nEn que sentido queres generar el mutante?")
-            direccion= input("Ascendente: 1 | Descendente: 2 | : ")
-            if len(direccion) == 1 and direccion in ("1","2"):# Se comprueba si la entrada es la que corresponde
-                return direccion
-            else:
-                print("\nIntentelo devuelta")
+    def __init__(self) -> None: # Inicializa el método constructor de la superclase
+        super().__init__()
 
     def mostrar_coordenadas(self) -> None:
         """
@@ -290,36 +279,38 @@ class Viruz(Mutador):
         el sentido (self.direccion)
         """
         while True:# Se verifica que el usuario ingrese de forma correta el input
-            fila  = input("Ingrese la fila seleccionada: (Formato: Fila:1) ").lower()
-
+            fila  = input("\nIngrese la fila seleccionada: (Formato: Fila:1) :  ").lower()
             # Se verfica que la entrada corresponda a las claves del diccionario de coordenadas
-            if fila in self.__coordenadas:
+            if fila in self.coordenadas:
                 break
             else:
                 print("Ingreso incorrecto, siga el formato")
-
         # Retorna el valor de la clave introducida segun el sentido, la clave es una lista con coordendass
         if self.direccion == 1: # Ascendente
-            print(f"Has seleccionado la {fila}. Coordenadas: {self.__coordenadas[fila]}")
-            return self.__coordenadas[fila]
+            print(f"Has seleccionado la {fila}. Coordenadas: {self.coordenadas[fila]}")
+            return self.coordenadas[fila]
         else:
             # Descendente
-            coordenadas = list(reversed(self.__coordenadas[fila])) # Revierte la lista de coordenadas
+            coordenadas = list(reversed(self.coordenadas[fila])) # Revierte la lista de coordenadas
             print(f"Has seleccionado la {fila}. Coordenadas: {coordenadas}")
             return coordenadas
 
-    def crear_mutante(self) -> list:
+    def crear_mutante(self,adn: list,base: str,direccion: int) -> list:
+        self.adn = adn
+        self.base = base
+        self.direccion = direccion
         """
         Método heredado modificado
         Mientras se respete el fomato este método retorna una matriz modificada
         en caso contrario se le pedira al usuario que lo intente de nuevo
         """
-        self.direccion = self.sentido()# Se llama al método de direcciones
         while True:
             try:
-                super().crear_mutante()# Llama al método padre
-                print("\nMutante Ascendente") if self.direccion == 1 else print("\nMutante Descendente")# Muestra la dirección del usuario
 
+                print("\nElija donde quiere generar el mutante diagonal")
+                print("Mutante Ascendente") if self.direccion == 1 else print("\nMutante Descendente")# Muestra la dirección del usuario
+                self.mostrar_coordenadas()
+                self.separar()
                 # Se llama al método para determinar con que coordenadas trabajar
                 secuencia =self.elegir_filas()
 

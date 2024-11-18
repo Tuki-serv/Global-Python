@@ -21,16 +21,16 @@ def imprimir_secuencia(adn: list) -> None:
     print("\n".join("  ".join(adn[i][j] for j in range(6)) for i in range(6)))
     print("")
 
-def verificar_opciones(mensaje:str ,opciones: int) -> int:
+def verificar_opciones(mensaje:str ,opciones: tuple) -> int:
     """
     Verifica los inputs del usuario
     """
     while True:# Si se ingresa un valor incorreto se le pide que lo intente devuelta
         try:
-            option = int(input(mensaje))
+            option = input(mensaje)
             # Verifica que el input corresponda a algún elemento de opciones
             if option in opciones:
-                return option
+                return int(option)
             else:
                 separar()
                 print("\nIntentelo nuevamente")
@@ -54,16 +54,18 @@ def mutar(adn: list) -> list:
             print("\nIntentelo nuevamente. Secuencia Invalida")
 
     # Se le pregunta al usuario que medidas quiere tomar
-    option = verificar_opciones("\nComo queres mutar? Horizontal:1 | Vertical:2 | Diagonal:3 | :  ", (1,2,3))# Llamada a la función
+    option = verificar_opciones("\nComo queres mutar? Horizontal:1 | Vertical:2 | Diagonal:3 | :  ", ("1","2","3"))# Llamada a la función
     
     if (option == 1) or (option == 2):
-        adn1 = Clases.Radiacion(adn,base,option)# Se crea un objeto en la Clase Radiación
-        adn = adn1.crear_mutante()# Se guarda la matriz
+        adn1 = Clases.Radiacion()# Se crea un objeto en la Clase Radiación
+        adn = adn1.crear_mutante(adn,base,option)# Se guarda la matriz
         imprimir_secuencia(adn)# Se imprime la matriz
         return adn# Retorna la matriz
     else:
-        adn1 = Clases.Viruz(adn,base,option)# Se crea un objeto en la Clase Viruz
-        adn = adn1.crear_mutante()# Se guarda la matriz
+        print("\nEn que sentido queres generar el mutante?")
+        sentido = verificar_opciones("Ascendente: 1 | Descendente: 2 | : ",("1","2"))
+        adn1 = Clases.Viruz()# Se crea un objeto en la Clase Viruz
+        adn = adn1.crear_mutante(adn,base,sentido)# Se guarda la matriz
         imprimir_secuencia(adn)# Se imprime la matriz
         return adn# Retorna la matriz
 
@@ -91,7 +93,7 @@ def detectar(adn: list) -> list:
         print("\nLa secuencia de ADN contiene mutaciones\n ")
         
         # Se le pregunta al usuario que medidas quiere tomar
-        option = verificar_opciones("\nQue aciones tomara? Mutar ADN: 1 | Sanar ADN: 2|:  ", (1,2))# Llamada a la función
+        option = verificar_opciones("\nQue aciones tomara? Mutar ADN: 1 | Sanar ADN: 2|:  ", ("1","2"))# Llamada a la función
         if option == 1:
             adn = mutar(adn)# Llamada a la función
             return adn# Se retorna la matriz
@@ -133,7 +135,7 @@ while True:# Segun quiera el usuario, se cierra el programa
     # Se le pregunta al usuario que acción tomar
     while True:
         print("Que es lo que desea hacer?")
-        option = verificar_opciones("Detectar mutantes: 1 | Mutar ADN: 2 | Sanar ADN: 3|:  ", (1,2,3))# Llamada a la función
+        option = verificar_opciones("Detectar mutantes: 1 | Mutar ADN: 2 | Sanar ADN: 3|:  ", ("1","2","3"))# Llamada a la función
 
         # Como interactuar con la matriz
         if option == 1:
@@ -144,7 +146,7 @@ while True:# Segun quiera el usuario, se cierra el programa
             adn = sanar(adn)# Llamada a la función
 
         # Se le pregunta si quiere seguir usando la matriz 
-        option = verificar_opciones("Quiere seguir usando esta secuenciade ADN | Si: 1 | No: 2 | :  ", (1,2))# Llamada a la función
+        option = verificar_opciones("Quiere seguir usando esta secuenciade ADN | Si: 1 | No: 2 | :  ", ("1","2"))# Llamada a la función
         print("")
         if option == 1:
             # Se le mostrara al usuario devuelta como interactuar con la matriz
@@ -158,7 +160,7 @@ while True:# Segun quiera el usuario, se cierra el programa
 
     # Se le pregunta si quiere cerrar el programa o introducir una nueva matriz
     print("\nQuiere salir o continuar con otra secuencia de AND?")
-    option = verificar_opciones("\nSalir del programa? Si: 1 | No: 2 | :  ", (1,2))# Llamada a la función
+    option = verificar_opciones("\nSalir del programa? Si: 1 | No: 2 | :  ", ("1","2"))# Llamada a la función
     if option == 1:# Salir programa| Sale del bucle infinito
         break
     else:
