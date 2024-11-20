@@ -131,11 +131,11 @@ class Mutador():
     def __init__(self) -> None:# Metodo constructor
         self.cantidad = 4
         self.coordenadas = {# Coordendas para iterar en diagonal
-    "fila:1" : [[3, 0], [2, 1], [1, 2], [0, 3]],
-    "fila:2" : [[4, 0], [3, 1], [2, 2], [1, 3], [0, 4]],
-    "fila:3" : [[5, 0], [4, 1], [3, 2], [2, 3], [1, 4], [0, 5]],
-    "fila:4" : [[5, 1], [4, 2], [3, 3], [2, 4], [1, 5]],
-    "fila:5" : [[5, 2], [4, 3], [3, 4], [2, 5]]
+    "1" : [[3, 0], [2, 1], [1, 2], [0, 3]],
+    "2" : [[4, 0], [3, 1], [2, 2], [1, 3], [0, 4]],
+    "3" : [[5, 0], [4, 1], [3, 2], [2, 3], [1, 4], [0, 5]],
+    "4" : [[5, 1], [4, 2], [3, 3], [2, 4], [1, 5]],
+    "5" : [[5, 2], [4, 3], [3, 4], [2, 5]]
     }
         #self.adn = adn
         #self.base = base
@@ -279,9 +279,9 @@ class Viruz(Mutador):
         el sentido (self.direccion)
         """
         while True:# Se verifica que el usuario ingrese de forma correta el input
-            fila  = input("\nIngrese la fila seleccionada: (Formato: Fila:1) :  ").lower()
+            fila  = input("\nIngrese el número de la fila seleccionada: ")
             # Se verfica que la entrada corresponda a las claves del diccionario de coordenadas
-            if fila in self.coordenadas:
+            if fila in self.coordenadas.keys() and len(fila) == 1 :
                 break
             else:
                 print("Ingreso incorrecto, siga el formato")
@@ -315,7 +315,7 @@ class Viruz(Mutador):
                 secuencia =self.elegir_filas()
 
                 # Pedir las coordenadas desde donde se inicia la mutación
-                origen = list(input("\nIngrese la coordenada (fila, columna. Ej: 21): "))
+                origen = list(input("\nIngrese un par de coordenadas en forma de decena (fila, columna. Ej: [2,1] = 21): "))
                 origen = list(map(int, origen))
                 if origen not in secuencia and len(origen) != 2:# Se crea una instancia de error si se la entrada es diferente al formato
                     raise ValueError("\nIngrese solamente el par de coordenadas dentro de la fila")
