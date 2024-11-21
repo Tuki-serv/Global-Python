@@ -16,7 +16,7 @@ Nosotros somos :
 Realiza una búsqueda de mutaciones en la secuencia de ADN, se considera mutación cuando una base nitrogenada se repite más de 3 tres veces en alguna dirección de la secuencia del ADN.
 #### Mutar ADN
    Genera una mutación en la secuencia de ADN. Se le pedirá que ingrese una base nitrogenada la cual generara el mutante, luego se le pregunta la dirección de la mutación
-   
+   Tenga en cuenta que la mutación se deberá a una base repetida 4 veces
    Direcciones Horizontal y Vertical: 
    - Se le pedirá que ingrese las coordenadas de origen en formato de decena 
    - Fila, Columna.

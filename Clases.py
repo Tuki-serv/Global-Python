@@ -205,7 +205,9 @@ class Viruz(Mutador):
                 self.limpiar_consola()
                 print(f"\nError: {error}. Intente nuevamente.")
                 control = True
-                self.mostrar_coordenadas()
+                sentido = self.sentido # Esto es muy importante, es redundante pero con esto se asegura que las coordenadas sean las correctas
+                self.mostrar_coordenadas(sentido)
+                print(self.secuencia)
             except IndexError:
                 self.limpiar_consola()
                 print("\nError: Fuera de rango de la matriz | RECUERDE: la base se repite 4 veces dentro del rango de la fila")
