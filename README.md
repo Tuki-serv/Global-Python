@@ -51,3 +51,5 @@ Si detecta mutaciones, generara una nueva secuencia de ADN de forma aleatoria, m
 ## Jonathan Serrano Ojeda
 ## Santiago Rubén Sordi
 ## Lucas Gonzalo Hernández 
+
+https://docs.google.com/spreadsheets/d/1bZPggFVtu03JY0q20DmCT6IPv9_wA5c3_TJGQdctcTo/edit?usp=drivesdk
